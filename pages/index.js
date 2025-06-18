@@ -1,65 +1,68 @@
 import { useState, useRef, useEffect } from 'react';
-import { styled } from 'styled-components';
+import { styled, createGlobalStyle } from 'styled-components';
 
-const Container = styled.div`
-  max-width: 480px;
-  margin: 40px auto;
-  background: #121212;
-  padding: 30px 25px;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-  color: #e0e0e0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-`;
-
-const Title = styled.h1`
-  text-align: center;
-  font-weight: 900;
-  margin-bottom: 24px;
-  color: #61dafb;
-  text-shadow: 0 0 8px #61dafb;
-`;
-
-const Button = styled.button`
-  display: block;
-  margin: 0 auto 24px auto;
-  padding: 14px 36px;
-  font-size: 18px;
-  font-weight: 700;
-  color: #121212;
-  background-color: #61dafb;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px #61dafbaa;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #21a1f1;
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: #1D1E23;
   }
-
-  &:active {
-    background-color: #1781c7;
+  * {
+    box-sizing: border-box;
+    margin: '0px';
+    padding: '0px';
   }
 `;
 
-const ModeText = styled.p`
-  font-size: 16px;
-  text-align: center;
-  font-weight: 600;
-  color: ${({ mode }) => (mode === 'wakeword' ? '#7fffd4' : '#ffa500')};
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  user-select: none;
-`;
+const HomeSection = styled.section`
+    width: 100%;
+    min-height: 100vh;
+    background: #1D1E23;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+`
 
-const StatusMessage = styled.p`
-  font-style: italic;
-  text-align: center;
-  margin-top: 16px;
-  color: #ccc;
-  min-height: 24px;
-`;
+const HomeHeader = styled.header`
+    background: #181A1F;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;    
+
+`
+
+const Logo = styled.div`
+display: flex;
+align-items: flex-start;
+flex-direction: column;
+justify-content: flex-start;
+
+`
+
+const LogoTitle = styled.h1`
+
+`
+
+const LogoBallsDiv = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+`
+
+const LogoBalls = styled.div`
+width: 15px;
+height: 15px;
+border-radius: 100%;
+background: #CD2B4E;
+
+`
+
+
+
 
 export default function Home() {
     const [isListening, setIsListening] = useState(false);
@@ -83,7 +86,7 @@ export default function Home() {
             const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
             console.log('Reconhecido:', transcript, '\\Modo:', mode);
 
-            if (mode === 'wakeword' && transcript.includes('jarvis')) {
+            if (mode === 'wakeword' && transcript.includes('alexia')) {
                 setMode('command');
                 setStatus('Pode falar');
                 new Audio('/ativado.mp3').play();
@@ -120,6 +123,8 @@ export default function Home() {
     }, [isListening, mode]);
 
     useEffect(() => {
+        document.querySelector("body").style.margin = '0px';
+        document.querySelector("body").style.minHeight = '100vh';
         speechSynthesis.getVoices().forEach(voice => {
             console.log(`Nome: ${voice.name} | Idioma: ${voice.lang} | Masculina: ${voice.name.toLowerCase().includes('male') || voice.name.toLowerCase().includes('daniel')}`);
         });
@@ -129,8 +134,6 @@ export default function Home() {
             window.speechSynthesis.getVoices();
         };
     }, []);
-
-    console
 
     const speak = (text) => {
         if (!synth) return;
@@ -158,14 +161,30 @@ export default function Home() {
         setIsListening(!isListening);
     };
 
-    return (
-        <Container>
+    /* <Container>
             <Title>Assistente Pessoal</Title>
             <Button onClick={toggleListening}>
                 {isListening ? 'Desativar escuta' : 'Ativar escuta'}
             </Button>
             <ModeText mode={mode}>Modo: {mode}</ModeText>
             <StatusMessage>{status}</StatusMessage>
-        </Container>
+        </Container> */
+
+    return (
+        <>
+            <GlobalStyle />
+            <HomeSection>
+                <HomeHeader>
+                    <Logo>
+                        <LogoTitle>Alex.IA</LogoTitle>
+                        <LogoBallsDiv>
+                            <LogoBalls></LogoBalls>
+                            <LogoBalls></LogoBalls>
+                            <LogoBalls></LogoBalls>
+                        </LogoBallsDiv>
+                    </Logo>
+                </HomeHeader>
+            </HomeSection>
+        </>
     );
 }
